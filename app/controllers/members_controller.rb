@@ -1,51 +1,73 @@
 class MembersController < ApplicationController
-  before_action :set_member, only: [:show, :update, :destroy]
+  before_action :set_member, only: [:show, :update, :destroy, :befriend, :search]
 
-  # GET /members
   def index
     @members = Member.all
+    render json: serialized("Members", Member.all), status: :ok
 
-    render json: @members
   end
 
-  # GET /members/1
   def show
-    render json: @member
+    render json: serialized("Member", @member), status: :ok
   end
 
-  # POST /members
   def create
-    @member = Member.new(member_params)
+    @member = new_member
 
     if @member.save
-      render json: @member, status: :created, location: @member
+      render json: serialized("Member", @member), status: :created
     else
-      render json: @member.errors, status: :unprocessable_entity
+      render_422(@member.errors.full_messages.join(','))
     end
   end
 
-  # PATCH/PUT /members/1
-  def update
-    if @member.update(member_params)
-      render json: @member
+  # def update
+  #   if @member.update(member_params)
+  #     render json: @member
+  #   else
+  #     render json: @member.errors, status: :unprocessable_entity
+  #   end
+  # end
+  def search
+    return render_422('invalid query params') unless params[:heading]
+    render json: serialized("Search",expert_members, {params: {member: @member}})
+  end
+
+  def befriend
+    return render_422('invalid query params') unless params[:friend_id]
+    if @member.befriend(friend)
+      render :ok
     else
-      render json: @member.errors, status: :unprocessable_entity
+      render_422(@member.errors.full_messages.join(','))
     end
   end
 
-  # DELETE /members/1
   def destroy
     @member.destroy
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_member
       @member = Member.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
     def member_params
-      params.require(:member).permit(:name, :url, :url_short)
+      params.require(:member).permit(:name, :url)
+    end
+
+    def friend
+      Member.find(params[:friend_id])
+    end
+
+    def expert_members
+      @expert_members ||= Heading.where("heading like ?", "%#{params[:heading]}%").map(&:member)
+    end
+
+    def new_member
+      @new_member ||= find_or_initialize_member
+    end
+
+    def find_or_initialize_member
+      Member.find_or_initialize_by(name: member_params[:name], url: member_params[:url])
     end
 end

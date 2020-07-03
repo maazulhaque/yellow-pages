@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
-  resources :members
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  # resources :members
+  resource :members do
+    patch "/:id/befriend/:friend_id", to: "members#befriend", on: :member
+    get "/:id", to: 'members#show', on: :member
+    get '', to: 'members#index', on: :collection
+    get '/search/:id', to: 'members#search'
+  end
 end
