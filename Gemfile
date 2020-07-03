@@ -33,6 +33,12 @@ group :development, :test do
   gem "pry"
   gem "pry-rails"
   gem "pry-nav"
+  gem "rspec"
+  gem "rspec-core"
+  gem "rspec-rails"
+  gem "shoulda-matchers"
+  gem 'factory_bot_rails'
+
 end
 
 group :development do

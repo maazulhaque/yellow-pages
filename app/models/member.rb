@@ -13,6 +13,7 @@ class Member < ApplicationRecord
 
   def befriend(member)
     return false unless can_be_befriended?(member)
+
     self.friends << member
     member.friends << self
   end
