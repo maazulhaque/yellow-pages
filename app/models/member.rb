@@ -1,10 +1,10 @@
 class Member < ApplicationRecord
-  require 'open-uri'
+  require "open-uri"
   include ShortestPath::Member
 
   has_many :headings
-  has_many :friendships, :foreign_key => "person_id", :class_name => "Friendship"
-  has_many :friends, :through => :friendships
+  has_many :friendships, foreign_key: "person_id", class_name: "Friendship"
+  has_many :friends, through: :friendships
   before_save :shorten_url
   after_create :parse_url
 
@@ -14,7 +14,7 @@ class Member < ApplicationRecord
   def befriend(member)
     return false unless can_be_befriended?(member)
 
-    self.friends << member
+    friends << member
     member.friends << self
   end
 
@@ -27,7 +27,7 @@ class Member < ApplicationRecord
 
   def parse_url
     page = Nokogiri::HTML(open(url))
-    page.css('h1,h2,h3').each do |h1|
+    page.css("h1,h2,h3").each do |h1|
       headings << Heading.create!(heading: h1.text.strip, member: self)
     end
   rescue StandardError => e
@@ -43,9 +43,9 @@ class Member < ApplicationRecord
   end
 
   def valid_url
-    open(url).status == ["200", "OK"]
+    open(url).status == %w[200 OK]
   rescue StandardError => e
-    errors.add(:url, 'invalid')
+    errors.add(:url, "invalid")
     false
   end
 end

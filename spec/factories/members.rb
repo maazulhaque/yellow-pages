@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :member, class: Member do
     sequence(:name) { |n| "name#{n}" }
-    url { "https://www.google.com/" }
+    url { 'https://www.google.com/' }
 
     trait :with_headings do
       after :create do |m|

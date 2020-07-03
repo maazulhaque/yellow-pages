@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,30 +12,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_01_235545) do
-
-  create_table "friendships", force: :cascade do |t|
-    t.integer "person_id"
-    t.integer "friend_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+ActiveRecord::Schema.define(version: 20_200_701_235_545) do
+  create_table 'friendships', force: :cascade do |t|
+    t.integer 'person_id'
+    t.integer 'friend_id'
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
   end
 
-  create_table "headings", force: :cascade do |t|
-    t.string "heading"
-    t.integer "member_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["member_id"], name: "index_headings_on_member_id"
+  create_table 'headings', force: :cascade do |t|
+    t.string 'heading'
+    t.integer 'member_id', null: false
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
+    t.index ['member_id'], name: 'index_headings_on_member_id'
   end
 
-  create_table "members", force: :cascade do |t|
-    t.string "name"
-    t.string "url"
-    t.string "url_short"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+  create_table 'members', force: :cascade do |t|
+    t.string 'name'
+    t.string 'url'
+    t.string 'url_short'
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
   end
 
-  add_foreign_key "headings", "members"
+  add_foreign_key 'headings', 'members'
 end

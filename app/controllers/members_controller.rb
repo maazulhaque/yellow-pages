@@ -16,13 +16,14 @@ class MembersController < ApplicationController
   end
 
   def search
-    return render_422('invalid query params') unless params[:heading]
+    return render_422("invalid query params") unless params[:heading]
 
-    render json: serialized("Search",expert_members, {params: {member: member}})
+    render json: serialized("Search", expert_members, { params: { member: member } })
   end
 
   def befriend
-    return render_422('invalid query params') unless params[:friend_id]
+    return render_422("invalid query params") unless params[:friend_id]
+
     if member.befriend(friend)
       render :ok
     else
@@ -31,27 +32,28 @@ class MembersController < ApplicationController
   end
 
   private
-    def member
-      @member ||= Member.find(params[:id])
-    end
 
-    def member_params
-      params.require(:member).permit(:name, :url)
-    end
+  def member
+    @member ||= Member.find(params[:id])
+  end
 
-    def friend
-      Member.find(params[:friend_id])
-    end
+  def member_params
+    params.require(:member).permit(:name, :url)
+  end
 
-    def expert_members
-      @expert_members ||= Heading.where("heading like ?", "%#{params[:heading]}%").map(&:member).select{|m| !m.friends.include? (member)}
-    end
+  def friend
+    Member.find(params[:friend_id])
+  end
 
-    def new_member
-      @new_member ||= find_or_initialize_member
-    end
+  def expert_members
+    @expert_members ||= Heading.where("heading like ?", "%#{params[:heading]}%").map(&:member).reject { |m| m.friends.include? member }
+  end
 
-    def find_or_initialize_member
-      Member.find_or_initialize_by(name: member_params[:name], url: member_params[:url])
-    end
+  def new_member
+    @new_member ||= find_or_initialize_member
+  end
+
+  def find_or_initialize_member
+    Member.find_or_initialize_by(name: member_params[:name], url: member_params[:url])
+  end
 end
