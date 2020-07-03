@@ -12,7 +12,7 @@ module ShortestPath
         break if current_member == member
         visited.add(current_member)
         friends = current_member.friends
-
+        return 'outside of your network' unless friends.present?
         friends.each do |friend|
           if !visited.include?(friend)
             shortest_paths[friend] = current_member

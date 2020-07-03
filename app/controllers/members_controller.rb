@@ -30,6 +30,7 @@ class MembersController < ApplicationController
   # end
   def search
     return render_422('invalid query params') unless params[:heading]
+
     render json: serialized("Search",expert_members, {params: {member: @member}})
   end
 
@@ -60,7 +61,7 @@ class MembersController < ApplicationController
     end
 
     def expert_members
-      @expert_members ||= Heading.where("heading like ?", "%#{params[:heading]}%").map(&:member)
+      @expert_members ||= Heading.where("heading like ?", "%#{params[:heading]}%").map(&:member).select{|m| !m.friends.include? (@member)}
     end
 
     def new_member
